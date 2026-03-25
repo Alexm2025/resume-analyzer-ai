@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Resume | Resume Analyzer AI{% endblock %}
+
+{% block content %}
+<section class="page-intro">
+    <div>
+        <span class="eyebrow">Resume Upload</span>
+        <h1>Analyze a new resume PDF</h1>
+        <p>Upload a PDF, optionally paste a job description, and generate a complete ATS-style analysis report.</p>
+    </div>
+</section>
+
+<section class="surface-card form-card">
+    <form method="post" enctype="multipart/form-data" class="form-stack">
+        <label class="upload-dropzone">
+            <span>Resume PDF</span>
+            <input type="file" name="resume_file" accept=".pdf,application/pdf" required>
+            <small>Select a resume PDF up to 10 MB.</small>
+        </label>
+
+        <label>
+            <span>Job description (optional)</span>
+            <textarea name="job_description" rows="8" placeholder="Paste a target job description here to include job-match scoring and tailoring context."></textarea>
+        </label>
+
+        <button type="submit" class="btn">Upload and Analyze</button>
+    </form>
+</section>
+{% endblock %}

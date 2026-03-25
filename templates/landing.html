@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Analyzer AI | Modern Resume Review{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-copy">
+        <span class="eyebrow">Production-style SaaS MVP</span>
+        <h1>Upload a resume, score it instantly, and improve it with AI.</h1>
+        <p>
+            Resume Analyzer AI helps candidates turn raw resumes into recruiter-ready versions with section detection,
+            ATS checks, scoring, history, and truth-preserving AI rewrites.
+        </p>
+        <div class="hero-actions">
+            <a class="btn" href="{{ url_for('auth.signup') }}">Start Free</a>
+            <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">Login</a>
+        </div>
+    </div>
+    <div class="hero-panel surface-card">
+        <div class="hero-metric">
+            <span>Resume score</span>
+            <strong>84 / 100</strong>
+        </div>
+        <ul class="feature-list">
+            <li>PDF parsing with section detection</li>
+            <li>AI summary and bullet rewrites</li>
+            <li>ATS optimization and job tailoring</li>
+            <li>History dashboard with saved reports</li>
+        </ul>
+    </div>
+</section>
+
+<section class="three-up">
+    <article class="surface-card">
+        <h2>Analyze</h2>
+        <p>Detect key resume sections, missing content, ATS coverage, action verbs, and formatting quality.</p>
+    </article>
+    <article class="surface-card">
+        <h2>Improve</h2>
+        <p>Rewrite summaries, strengthen bullet points, improve project descriptions, and generate a polished version.</p>
+    </article>
+    <article class="surface-card">
+        <h2>Track</h2>
+        <p>Save every upload, revisit past reports, and compare original content with AI-enhanced output.</p>
+    </article>
+</section>
+{% endblock %}

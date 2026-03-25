@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}AI Improvements | Resume Analyzer AI{% endblock %}
+
+{% block content %}
+<section class="page-intro">
+    <div>
+        <span class="eyebrow">AI Workspace</span>
+        <h1>Improve and rewrite this resume with AI</h1>
+        <p>Edit the source text if you want, run specific actions, and compare the original content with the improved version side by side.</p>
+    </div>
+    <a class="btn btn-secondary" href="{{ url_for('resumes.analysis_result', report_id=report['id']) }}">Back to Analysis</a>
+</section>
+
+<section class="surface-card">
+    <div class="section-heading">
+        <h2>Reusable AI actions</h2>
+    </div>
+    <div class="workspace-grid">
+        <form class="surface-subcard form-stack" method="post" action="{{ url_for('ai.generate_action', report_id=report['id'], action='improve_summary') }}">
+            <h3>Improve Summary</h3>
+            <textarea name="source_text" rows="8">{{ default_sources['improve_summary'] }}</textarea>
+            <button type="submit" class="btn btn-small">Generate</button>
+        </form>
+
+        <form class="surface-subcard form-stack" method="post" action="{{ url_for('ai.generate_action', report_id=report['id'], action='rewrite_bullets') }}">
+            <h3>Rewrite Bullet Points</h3>
+            <textarea name="source_text" rows="10">{{ default_sources['rewrite_bullets'] }}</textarea>
+            <button type="submit" class="btn btn-small">Generate</button>
+        </form>
+
+        <form class="surface-subcard form-stack" method="post" action="{{ url_for('ai.generate_action', report_id=report['id'], action='improve_projects') }}">
+            <h3>Improve Project Descriptions</h3>
+            <textarea name="source_text" rows="10">{{ default_sources['improve_projects'] }}</textarea>
+            <button type="submit" class="btn btn-small">Generate</button>
+        </form>
+
+        <form class="surface-subcard form-stack" method="post" action="{{ url_for('ai.generate_action', report_id=report['id'], action='optimize_ats') }}">
+            <h3>Optimize for ATS</h3>
+            <textarea name="source_text" rows="10">{{ default_sources['optimize_ats'] }}</textarea>
+            <button type="submit" class="btn btn-small">Generate</button>
+        </form>
+
+        <form class="surface-subcard form-stack" method="post" action="{{ url_for('ai.generate_action', report_id=report['id'], action='tailor_job_description') }}">
+            <h3>Tailor to Job Description</h3>
+            <textarea name="source_text" rows="10">{{ default_sources['tailor_job_description'] }}</textarea>
+            <textarea name="job_description" rows="8" placeholder="Paste target job description">{{ report['job_description'] or '' }}</textarea>
+            <button type="submit" class="btn btn-small">Generate</button>
+        </form>
+
+        <form class="surface-subcard form-stack" method="post" action="{{ url_for('ai.generate_action', report_id=report['id'], action='full_resume_enhancement') }}">
+            <h3>Generate Improved Resume</h3>
+            <textarea name="source_text" rows="10">{{ default_sources['full_resume_enhancement'] }}</textarea>
+            <textarea name="job_description" rows="8" placeholder="Optional job description">{{ report['job_description'] or '' }}</textarea>
+            <button type="submit" class="btn btn-small">Generate</button>
+        </form>
+    </div>
+</section>
+
+<section class="surface-card">
+    <div class="section-heading">
+        <h2>Generated improvements</h2>
+    </div>
+    {% if improvements %}
+        {% for improvement in improvements %}
+            <article class="comparison-shell">
+                <div class="comparison-header">
+                    <div>
+                        <strong>{{ improvement['title'] }}</strong>
+                        <span>{{ improvement['created_at'] }}</span>
+                    </div>
+                    {% if improvement['generated_file_path'] %}
+                        <a class="btn btn-small btn-secondary" href="{{ url_for('ai.download_generated_resume', improvement_id=improvement['id']) }}">Download file</a>
+                    {% endif %}
+                </div>
+                <div class="comparison-grid">
+                    <div>
+                        <p class="comparison-label">Original text</p>
+                        <pre class="text-preview">{{ improvement['original_text'] }}</pre>
+                    </div>
+                    <div>
+                        <p class="comparison-label">AI improved text</p>
+                        <pre class="text-preview">{{ improvement['improved_text'] }}</pre>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p class="empty-state">No AI output yet. Run any action above to generate the first improvement.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Resume Analyzer AI{% endblock %}
+
+{% block content %}
+<section class="page-intro">
+    <div>
+        <span class="eyebrow">Dashboard</span>
+        <h1>Your resume improvement workspace</h1>
+        <p>Upload new resumes, review recent scores, and revisit the AI outputs you generated earlier.</p>
+    </div>
+    <a class="btn" href="{{ url_for('resumes.upload_resume') }}">Upload Resume</a>
+</section>
+
+<section class="stats-grid">
+    <article class="surface-card metric-card">
+        <span>Total uploads</span>
+        <strong>{{ stats.total_uploads }}</strong>
+    </article>
+    <article class="surface-card metric-card">
+        <span>Analysis reports</span>
+        <strong>{{ stats.total_reports }}</strong>
+    </article>
+    <article class="surface-card metric-card">
+        <span>AI improvements</span>
+        <strong>{{ stats.total_improvements }}</strong>
+    </article>
+    <article class="surface-card metric-card">
+        <span>Average score</span>
+        <strong>{{ stats.average_score|int }}/100</strong>
+    </article>
+</section>
+
+<section class="two-column-grid">
+    <div class="surface-card">
+        <div class="section-heading">
+            <h2>Recent analyses</h2>
+            <a href="{{ url_for('main.history') }}">View all</a>
+        </div>
+        {% if recent_reports %}
+            <div class="stack-list">
+                {% for report in recent_reports %}
+                    <a class="list-row" href="{{ url_for('resumes.analysis_result', report_id=report['id']) }}">
+                        <div>
+                            <strong>{{ report['original_filename'] }}</strong>
+                            <span>{{ report['created_at'] }}</span>
+                        </div>
+                        <span class="pill">{{ report['score'] }}/100</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">No reports yet. Upload your first resume to get started.</p>
+        {% endif %}
+    </div>
+
+    <div class="surface-card">
+        <div class="section-heading">
+            <h2>Recent AI actions</h2>
+        </div>
+        {% if recent_improvements %}
+            <div class="stack-list">
+                {% for item in recent_improvements %}
+                    <div class="list-row">
+                        <div>
+                            <strong>{{ item['title'] }}</strong>
+                            <span>{{ item['created_at'] }}</span>
+                        </div>
+                        <span class="pill subtle">{{ ai_action_labels[item['action_type']] }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">Your AI-generated improvements will appear here after you run them.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
