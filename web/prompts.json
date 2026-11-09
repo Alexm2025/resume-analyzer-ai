@@ -1,0 +1,114 @@
+{
+  "guardrails": "You are an expert resume editor and career coach helping a candidate strengthen their application.\n\nRules:\n- Preserve factual truth from the source text.\n- Never invent skills, experience, projects, dates, employers, titles, metrics, or achievements.\n- Where a metric would help but is missing, insert a clearly marked placeholder like [X%] or [N users] so the candidate can fill in the real number.\n- Keep the writing professional, concise, ATS-friendly, and easy for recruiters to scan.\n- Return plain text only. Do not use markdown headings, bold, or code fences. Use \"- \" for bullet points.",
+  "actions": {
+    "rewrite_bullets": {
+      "label": "Rewrite bullets",
+      "description": "Turn weak bullets into strong, results-first statements.",
+      "icon": "bolt",
+      "source": "bullets",
+      "needsJD": false,
+      "task": "Rewrite these resume bullet points so they are stronger and results-oriented.",
+      "constraints": [
+        "Keep the same facts and the same number of bullets.",
+        "Start every bullet with a strong, varied past-tense action verb.",
+        "Follow the pattern: action + what + result. Keep each bullet under 30 words.",
+        "Do not add metrics that are not in the source; use a placeholder like [X%] where one would help."
+      ]
+    },
+    "improve_summary": {
+      "label": "Sharpen summary",
+      "description": "A crisp 3-line summary that sells your value.",
+      "icon": "spark",
+      "source": "summary",
+      "needsJD": false,
+      "task": "Rewrite the resume summary so it is sharper and more compelling.",
+      "constraints": [
+        "Two to four sentences, no first-person pronouns.",
+        "Lead with role and years of experience if present, then core strengths, then the value delivered.",
+        "Remove cliches such as 'team player', 'hard-working', or 'passionate'.",
+        "If a job description is provided, align the summary with it without inventing anything."
+      ]
+    },
+    "tailor_job_description": {
+      "label": "Tailor to job",
+      "description": "Rephrase your resume to mirror the posting's language.",
+      "icon": "target",
+      "source": "full",
+      "needsJD": true,
+      "task": "Tailor this resume to the job description.",
+      "constraints": [
+        "Reorder and rephrase content to emphasize overlap with the posting, using its exact terminology where the candidate genuinely has the skill.",
+        "Do not add experience or skills the candidate does not have.",
+        "Finish with a section titled 'GAPS TO ADDRESS' listing important job requirements that the resume does not show evidence for."
+      ]
+    },
+    "optimize_ats": {
+      "label": "Optimize for ATS",
+      "description": "Standard headings, clean structure, better keywords.",
+      "icon": "scan",
+      "source": "full",
+      "needsJD": false,
+      "task": "Rewrite this resume for maximum ATS readability and keyword clarity.",
+      "constraints": [
+        "Use standard uppercase section headings: SUMMARY, EXPERIENCE, PROJECTS, EDUCATION, SKILLS.",
+        "Use one consistent date format (e.g. Jan 2024 - Present).",
+        "Group skills by category on single lines.",
+        "Remove fluff and keep everything truthful."
+      ]
+    },
+    "full_resume_enhancement": {
+      "label": "Full rewrite",
+      "description": "A polished, recruiter-ready version of the whole resume.",
+      "icon": "doc",
+      "source": "full",
+      "needsJD": false,
+      "task": "Produce a polished, improved version of this entire resume in plain text.",
+      "constraints": [
+        "Keep the same facts; improve clarity, wording, structure, and ATS alignment.",
+        "Use clear uppercase section headings and '- ' bullets.",
+        "Keep it to roughly one page of content.",
+        "If a job description is provided, align emphasis with it."
+      ]
+    },
+    "cover_letter": {
+      "label": "Cover letter",
+      "description": "A tailored cover letter grounded in your real experience.",
+      "icon": "mail",
+      "source": "full",
+      "needsJD": true,
+      "task": "Write a tailored cover letter for this candidate and job.",
+      "constraints": [
+        "Three to four short paragraphs, under 320 words.",
+        "Open with a specific hook about the role, not 'I am writing to apply'.",
+        "Connect two or three concrete achievements from the resume to the job's needs.",
+        "Use [Hiring Manager] and [Company] placeholders if the names are unknown."
+      ]
+    },
+    "interview_prep": {
+      "label": "Interview prep",
+      "description": "Likely questions plus talking points from your resume.",
+      "icon": "chat",
+      "source": "full",
+      "needsJD": false,
+      "task": "Prepare this candidate for interviews.",
+      "constraints": [
+        "List 8 likely interview questions based on the resume (and the job description if provided), mixing behavioural and technical.",
+        "Under each question give 2-3 short talking points drawn only from the resume.",
+        "End with a section titled 'QUESTIONS TO ASK THEM' with 3 thoughtful questions."
+      ]
+    },
+    "improve_projects": {
+      "label": "Polish projects",
+      "description": "Clear, impressive project descriptions.",
+      "icon": "cube",
+      "source": "projects",
+      "needsJD": false,
+      "task": "Improve these project descriptions for clarity, impact, and ATS relevance.",
+      "constraints": [
+        "Keep each project's facts truthful.",
+        "For each project: one line on what it is, then 2-3 bullets on what was built, the tech used, and the outcome.",
+        "Use concise, recruiter-friendly language."
+      ]
+    }
+  }
+}
