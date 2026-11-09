@@ -16,6 +16,11 @@ export function loadPrompts() {
 let serverStatus = null;
 export async function detectServer() {
   if (serverStatus) return serverStatus;
+  // Static hosts have no backend; skip the probe to avoid a noisy 404.
+  if (/\.github\.io$/.test(location.hostname) || location.protocol === "file:") {
+    serverStatus = { ok: false };
+    return serverStatus;
+  }
   try {
     const r = await fetch("api/health", { headers: { Accept: "application/json" } });
     serverStatus = r.ok ? await r.json() : { ok: false };
