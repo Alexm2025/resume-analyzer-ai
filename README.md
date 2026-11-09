@@ -1,184 +1,80 @@
 # Resume Analyzer AI
 
-Resume Analyzer AI is a small production-style SaaS MVP built with Flask, SQLite, HTML, CSS, and JavaScript. Users can create an account, upload a resume PDF, extract its text, analyze section coverage, score ATS readiness, save history, and run AI-powered rewriting features using the OpenAI API.
+**Live demo → https://alexm2025.github.io/resume-analyzer-ai/**
+
+A fast, private resume analyzer. Drop in a PDF, DOCX or text resume and get a recruiter-grade report in under two seconds: a six-part score, prioritized issues with evidence from your own text, job-description keyword gaps, a live editor that re-scores as you type, and AI rewrites that never invent facts.
+
+Analysis runs **entirely in the browser**. Your resume is never uploaded anywhere unless you run an AI action.
 
 ## Features
 
-- Landing page with SaaS-style UI
-- User signup, login, and logout
-- Secure PDF upload handling
-- PDF text extraction with `pdfplumber` and `PyPDF2` fallback
-- Resume section detection for:
-  - Contact Info
-  - Summary / Objective
-  - Education
-  - Skills
-  - Projects
-  - Experience
-- Resume scoring out of 100
-- Suggestions engine for missing sections and weak spots
-- Dashboard and history views
-- SQLite storage for users, uploads, analysis reports, and AI improvements
-- OpenAI-powered improvements for:
-  - professional summary rewriting
-  - bullet point rewriting
-  - project description improvement
-  - ATS optimization
-  - job-description tailoring
-  - full improved resume generation
-- Side-by-side original vs improved comparison
-- Generated improved resume text files saved into the `generated/` folder
+| | |
+|---|---|
+| **Six-part score** | Impact, Structure, ATS readiness, Writing style, Skills, and Job match (when a job post is supplied), weighted into a 0–100 score and a letter grade. |
+| **30+ checks** | Quantified bullets, action-verb openers, weak phrases ("responsible for", "worked on"), clichés, first-person pronouns, passive voice, repetitive verbs, bullet length, date-format consistency, contact details, section coverage, length, odd characters. |
+| **Prioritized issues** | Critical / warning / tip, each with a why, a how-to-fix, and the exact lines from your resume. |
+| **Highlighted resume** | Your text with weak phrases, clichés, pronouns, passive voice, metrics, action verbs and job keywords marked inline. Each highlight type can be toggled. |
+| **Job match** | Paste a job post to see the match %, matched vs. missing keywords, years-of-experience and degree checks. |
+| **Live editor** | Edit the text and watch every category re-score as you type. Save as a new version and see the +/- delta. |
+| **Bullet fixer** | Instant rule-based rewrites for weak bullets, with no AI key needed. |
+| **AI studio** | Rewrite bullets, sharpen the summary, tailor to a job, optimize for ATS, full rewrite, cover letter, interview prep, polish projects. Before/after compare, copy, download, and "score this version". |
+| **History** | Every report is saved locally with a score-over-time chart. |
+| **Export** | Print-ready PDF report and JSON export. |
+| **Polish** | Light/dark themes, fully responsive, keyboard accessible, reduced-motion support. |
 
-## Folder Structure
+## How AI works
+
+AI actions call OpenAI in one of two ways:
+
+1. **Your own key (static hosting / GitHub Pages).** Open **Settings** and paste an OpenAI API key. It is stored only in your browser's localStorage and sent directly to `api.openai.com`.
+2. **Server key (self-hosted Flask).** Set `OPENAI_API_KEY` on the server. The app detects `/api/health` and routes AI calls through `/api/ai`, so users never see the key. The server rate-limits requests per IP.
+
+All prompts live in [`web/prompts.json`](web/prompts.json) and are shared by the browser and the server. Every prompt forbids inventing skills, employers, dates or metrics, and uses placeholders like `[X%]` where a real number should go.
+
+## Project structure
 
 ```text
-Resume Analyzer AI/
-  app.py
-  config.py
-  requirements.txt
-  .env.example
-  README.md
-  instance/
-  uploads/
-  generated/
-  resume_analyzer/
-    __init__.py
-    db.py
-    schema.sql
-    decorators.py
-    auth.py
-    main.py
-    resumes.py
-    ai_routes.py
-    services/
-      pdf_service.py
-      analyzer.py
-      ai_prompts.py
-      ai_helper.py
-  templates/
-    base.html
-    landing.html
-    dashboard.html
-    upload.html
-    analysis.html
-    ai_improvements.html
-    history.html
-    auth/
-      login.html
-      signup.html
-  static/
-    css/style.css
-    js/main.js
+web/                  Static app (deployed to GitHub Pages as-is, no build step)
+  index.html
+  css/app.css
+  js/analyzer.js      Scoring engine: pure functions, runs in browser and Node
+  js/parser.js        PDF (pdf.js) / DOCX (mammoth) / TXT extraction
+  js/ai.js            AI provider layer (server proxy or bring-your-own-key)
+  js/store.js         localStorage persistence
+  js/app.js           UI, routing, views
+  js/sample.js        Sample resume and job description
+  prompts.json        Shared AI prompt definitions
+server/__init__.py    Optional Flask backend: serves web/ and the AI proxy
+app.py                Flask entry point
+tests/                Node tests for the analyzer, pytest for the server
 ```
 
-## Database Tables
+## Run locally
 
-The SQLite schema creates these tables:
+Static only (no AI key on the server):
 
-- `users`
-- `uploaded_resumes`
-- `analysis_reports`
-- `ai_improvements`
+```bash
+cd web && python -m http.server 8000
+# open http://localhost:8000
+```
 
-## Scoring Rules
-
-The analyzer currently scores these criteria:
-
-- Contact info present
-- Summary / objective section present
-- Education section present
-- Skills section present
-- Projects section present
-- Experience section present
-- Action verbs used
-- Resume length is reasonable
-- ATS-friendly keywords found
-- Formatting clarity
-- Job-description match when a job description is supplied
-
-The app normalizes the score to `0-100`, even when job-description scoring is optional.
-
-## AI Prompt Design
-
-Prompt templates live in `resume_analyzer/services/ai_prompts.py`.
-
-Each prompt enforces these rules:
-
-- preserve factual truth
-- never invent fake skills, experience, dates, metrics, or achievements
-- improve wording, clarity, professionalism, and ATS relevance
-- return plain text for clean UI rendering
-
-## Local Setup
-
-1. Create and activate a virtual environment.
+With the Flask backend:
 
 ```bash
 python -m venv .venv
-```
-
-Windows PowerShell:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-macOS/Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-2. Install dependencies.
-
-```bash
+.venv\Scripts\activate          # Windows; use `source .venv/bin/activate` on macOS/Linux
 pip install -r requirements.txt
+copy .env.example .env          # optionally add OPENAI_API_KEY
+python app.py                   # http://127.0.0.1:5000
 ```
 
-3. Copy `.env.example` to `.env` and add your values.
-
-Required environment variables:
-
-- `SECRET_KEY`
-- `OPENAI_API_KEY`
-
-Optional:
-
-- `OPENAI_MODEL` defaults to `gpt-5-mini`
-- `AI_MAX_INPUT_CHARS` defaults to `16000`
-
-4. Run the app.
+## Tests
 
 ```bash
-flask --app app run
+node --test tests/analyzer.test.mjs
+pip install pytest && python -m pytest -q tests
 ```
 
-Or:
+## Deployment
 
-```bash
-python app.py
-```
-
-5. Open the app in your browser:
-
-```text
-http://127.0.0.1:5000
-```
-
-## Usage Flow
-
-1. Sign up or log in.
-2. Upload a resume PDF.
-3. Optionally paste a job description before analysis.
-4. Review extracted text, score, sections, keywords, and suggestions.
-5. Run AI actions from the analysis page or the dedicated AI workspace.
-6. Compare original and improved content side by side.
-7. Download the generated improved resume text file if needed.
-8. Revisit old reports from the dashboard or history page.
-
-## Notes
-
-- Uploaded files are stored in `uploads/`.
-- Generated improved resume text files are stored in `generated/`.
-- The database file is created automatically in `instance/resume_analyzer.db`.
-- If the OpenAI API key is missing or the API call fails, the app shows a clear error message instead of breaking the page.
+GitHub Actions (`.github/workflows/ci.yml`) runs both test suites on every push and PR. On pushes to `main` it publishes `web/` to the `gh-pages` branch, which GitHub Pages serves.
